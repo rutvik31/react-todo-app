@@ -14,7 +14,7 @@ import Alert from 'react-bootstrap/Alert'
 function formateDate(date) {
     const _ = new Date(date)
     const d = _.getDate() < 10 ? `0${_.getDate()}` : _.getDate()
-    const m = _.getMonth() < 10 ? `0${_.getMonth() + 1}` : _.getMonth() + 1
+    const m = _.getMonth() < 9 ? `0${_.getMonth() + 1}` : _.getMonth() + 1
     const y = _.getFullYear()
 
     return [d, m, y].join("-")
