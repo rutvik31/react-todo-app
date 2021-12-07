@@ -18,12 +18,11 @@ instance.interceptors.request.use((req) => {
 instance.interceptors.response.use((res) => {
     return res
 }, (error) => {
-    if (error.response.status == 401) {
+    if (error.response && error.response.status == 401) {
         localStorage.clear()
         window.location = '/login';
     }
     return Promise.reject(error);
 })
-// const token = localStorage.getItem("token")
 export default instance
 

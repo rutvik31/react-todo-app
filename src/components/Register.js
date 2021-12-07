@@ -27,7 +27,6 @@ const Register = () => {
             const data = { name, email, password }
             //Making Api Request
             const apiReq = await axios.post("/users/register", data)
-            console.log(apiReq)
         } catch (error) {
             setIsError(true)
             setError(error.response.data.message)
