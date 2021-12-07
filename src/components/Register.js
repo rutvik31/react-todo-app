@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import axios from './axios'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -18,7 +18,7 @@ const Register = () => {
     const [password, setPassword] = useState("")
     const [isError, setIsError] = useState(false)
     const [error, setError] = useState("")
-
+    const navigate = useNavigate()
 
     //Function called on form submit
     const handleFormSubmit = async (e) => {
@@ -26,7 +26,8 @@ const Register = () => {
         try {
             const data = { name, email, password }
             //Making Api Request
-            const apiReq = await axios.post("/users/register", data)
+            await axios.post("/users/register", data)
+            navigate("/login")
         } catch (error) {
             setIsError(true)
             setError(error.response.data.message)

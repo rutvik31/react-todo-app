@@ -17,7 +17,7 @@ function formateDate(date) {
     const m = _.getMonth() < 9 ? `0${_.getMonth() + 1}` : _.getMonth() + 1
     const y = _.getFullYear()
 
-    return [d, m, y].join("-")
+    return [y, m, d].join("-")
 
 }
 
@@ -26,16 +26,15 @@ const Addtodo = () => {
     //States
     const [title, setTitle] = useState("")
     const [text, setText] = useState("")
-    const [isCompleted, setIsCompleted] = useState("false")
     const [isError, setIsError] = useState(false)
     const [error, setError] = useState("")
     let navigate = useNavigate()
     const [list, setList] = useState([])
-    const [date, setDate] = useState(new Date())
+    const [date, setDate] = useState(formateDate(new Date()))
 
     const [reloadList, setReloadList] = useState(true)
     const getList = async () => {
-        const req = await axios.get("/users/gettodo", {
+        const req = await axios.get("/users/todo", {
             params: {
                 date: formateDate(date)
             }
@@ -44,7 +43,7 @@ const Addtodo = () => {
     }
 
     const toggleTodo = async (todo) => {
-        await axios.post("/users/toggletodo", todo)
+        await axios.patch("/users/todo", todo)
         setReloadList(!reloadList)
     }
 
@@ -56,9 +55,9 @@ const Addtodo = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
-            const data = { title, text, isCompleted }
+            const data = { title, text}
 
-            const apiReq = await axios.post("/users/addtodo", data)
+            await axios.post("/users/todo", data)
             setTitle("")
             setText("")
             setReloadList(!reloadList)
@@ -107,12 +106,12 @@ const Addtodo = () => {
                 </Row>
                 <Row className="justify-content-md-center mt-3">
                     <Col md="auto">
-                        <Form.Control type="date" onChange={(e) => {setDate(e.target.value); setReloadList(!reloadList)}}  value={date} />
+                        <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
                     </Col>
                     <Col md="auto">
                         <Card style={{ width: '20rem' }}>
                             <Card.Header>Todo List </Card.Header>
-                            <ul>
+                            <ul className="mt-3">
                                 {list.map(task => {
                                     return (
                                         <li key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }}>
