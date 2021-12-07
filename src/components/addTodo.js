@@ -11,6 +11,16 @@ import Col from 'react-bootstrap/Col'
 import Alert from 'react-bootstrap/Alert'
 
 
+function formateDate(date) {
+    const _ = new Date(date)
+    const d = _.getDate() < 10 ? `0${_.getDate()}` : _.getDate()
+    const m = _.getMonth() < 10 ? `0${_.getMonth() + 1}` : _.getMonth() + 1
+    const y = _.getFullYear()
+
+    return [d, m, y].join("-")
+
+}
+
 const Addtodo = () => {
 
     //States
@@ -21,10 +31,15 @@ const Addtodo = () => {
     const [error, setError] = useState("")
     let navigate = useNavigate()
     const [list, setList] = useState([])
+    const [date, setDate] = useState(new Date())
 
     const [reloadList, setReloadList] = useState(true)
     const getList = async () => {
-        const req = await axios.get("/users/gettodo")
+        const req = await axios.get("/users/gettodo", {
+            params: {
+                date: formateDate(date)
+            }
+        })
         setList(req.data.data)
     }
 
@@ -91,6 +106,9 @@ const Addtodo = () => {
                     </Col>
                 </Row>
                 <Row className="justify-content-md-center mt-3">
+                    <Col md="auto">
+                        <Form.Control type="date" onChange={(e) => {setDate(e.target.value); setReloadList(!reloadList)}}  value={date} />
+                    </Col>
                     <Col md="auto">
                         <Card style={{ width: '20rem' }}>
                             <Card.Header>Todo List </Card.Header>
