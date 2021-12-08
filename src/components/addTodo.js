@@ -8,7 +8,9 @@ import Container from 'react-bootstrap/Container'
 import Card from 'react-bootstrap/Card'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Navbar from 'react-bootstrap/Navbar'
 import Alert from 'react-bootstrap/Alert'
+
 
 
 function formateDate(date) {
@@ -55,7 +57,7 @@ const Addtodo = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
-            const data = { title, text}
+            const data = { title, text }
 
             await axios.post("/users/todo", data)
             setTitle("")
@@ -73,9 +75,13 @@ const Addtodo = () => {
     }
     return (
         <div>
+            <Navbar bg="light" variant="light" className="d-flex flex-row-reverse pe-3">
+
+                <Button onClick={logout} variant="primary" type="button"> logout</Button>
+            </Navbar>
             <Container>
                 <Row className="pt-3">
-                    <Col>
+                    <Col sm="12" md="12" lg="12">
                         <Card >
                             <Card.Header>Todo Form </Card.Header>
                             <Form onSubmit={handleFormSubmit} className="p-3">
@@ -90,14 +96,9 @@ const Addtodo = () => {
                                         <Form.Control type="text" placeholder="Enter your name" onChange={(e) => setText(e.target.value)} value={text} required />
                                     </FloatingLabel>
                                 </Form.Group>
-                                <div className="text-center" >
+                                <div className="text-center d-flex flex-row-reverse" >
                                     <Button variant="primary" type="submit">
                                         Add
-                                    </Button>
-                                </div>
-                                <div className="text-end" >
-                                    <Button onClick={logout} variant="primary" type="button">
-                                        logout
                                     </Button>
                                 </div>
                             </Form>
@@ -105,11 +106,11 @@ const Addtodo = () => {
                     </Col>
                 </Row>
                 <Row className="justify-content-md-center mt-3">
-                    <Col md="auto">
+                    <Col md="auto" sm="12" className="sm mb-3">
                         <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
                     </Col>
-                    <Col md="auto">
-                        <Card style={{ width: '20rem' }}>
+                    <Col lg={true}>
+                        <Card >
                             <Card.Header>Todo List </Card.Header>
                             <ul className="mt-3">
                                 {list.map(task => {
@@ -124,7 +125,7 @@ const Addtodo = () => {
                     </Col>
                 </Row>
             </Container>
-        </div>
+        </div >
 
     );
 
