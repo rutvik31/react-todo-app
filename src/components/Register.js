@@ -61,7 +61,7 @@ const Register = () => {
                                     </FloatingLabel>
                                 </Form.Group>
                                 <div className="text-end" >
-                                    <Button variant="primary" type="submit">
+                                    <Button variant="outline-primary" type="submit">
                                         Submit
                                     </Button>
                                 </div>

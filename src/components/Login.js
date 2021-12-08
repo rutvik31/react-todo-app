@@ -54,7 +54,7 @@ const Login = () => {
                                     </FloatingLabel>
                                 </Form.Group>
                                 <div className="text-end" >
-                                    <Button onClick={navigate} variant="primary" type="submit">
+                                    <Button onClick={navigate} variant="outline-primary" type="submit">
                                         login
                                     </Button>
                                 </div>

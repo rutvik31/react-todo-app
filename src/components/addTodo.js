@@ -77,12 +77,12 @@ const Addtodo = () => {
         <div>
             <Navbar bg="light" variant="light" className="d-flex flex-row-reverse pe-3">
 
-                <Button onClick={logout} variant="primary" type="button"> logout</Button>
+                <Button variant="outline-primary" onClick={logout} type="button"> logout</Button>
             </Navbar>
             <Container>
                 <Row className="pt-3">
                     <Col sm="12" md="12" lg="12">
-                        <Card >
+                        <Card border="warning" bg="Light" text="dark">
                             <Card.Header>Todo Form </Card.Header>
                             <Form onSubmit={handleFormSubmit} className="p-3">
                                 {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
@@ -97,7 +97,7 @@ const Addtodo = () => {
                                     </FloatingLabel>
                                 </Form.Group>
                                 <div className="text-center d-flex flex-row-reverse" >
-                                    <Button variant="primary" type="submit">
+                                    <Button variant="outline-success" type="submit">
                                         Add
                                     </Button>
                                 </div>
@@ -110,7 +110,7 @@ const Addtodo = () => {
                         <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
                     </Col>
                     <Col lg={true}>
-                        <Card >
+                        <Card border="warning" text="dark" >
                             <Card.Header>Todo List </Card.Header>
                             <ul className="mt-3">
                                 {list.map(task => {
