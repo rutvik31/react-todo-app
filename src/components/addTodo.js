@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import Container from 'react-bootstrap/Container'
 import Card from 'react-bootstrap/Card'
+import ListGroup from 'react-bootstrap/ListGroup'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Navbar from 'react-bootstrap/Navbar'
@@ -30,11 +31,11 @@ const Addtodo = () => {
     const [text, setText] = useState("")
     const [isError, setIsError] = useState(false)
     const [error, setError] = useState("")
-    let navigate = useNavigate()
     const [list, setList] = useState([])
     const [date, setDate] = useState(formateDate(new Date()))
-
+    let navigate = useNavigate()
     const [reloadList, setReloadList] = useState(true)
+
     const getList = async () => {
         const req = await axios.get("/users/todo", {
             params: {
@@ -47,6 +48,10 @@ const Addtodo = () => {
     const toggleTodo = async (todo) => {
         await axios.patch("/users/todo", todo)
         setReloadList(!reloadList)
+    }
+
+    const deleteTodo = async (id) => {
+        await axios.delete(`/users/todo/${id}`)
     }
 
     useEffect(() => {
@@ -106,21 +111,41 @@ const Addtodo = () => {
                     </Col>
                 </Row>
                 <Row className="justify-content-md-center mt-3">
-                    <Col md="auto" sm="12" className="sm mb-3">
-                        <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
-                    </Col>
-                    <Col lg={true}>
+                    <Col lg={true} className='pb-3'>
                         <Card border="warning" text="dark" >
-                            <Card.Header>Todo List </Card.Header>
-                            <ul className="mt-3">
-                                {list.map(task => {
-                                    return (
-                                        <li key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }}>
-                                            {task.text}
-                                        </li>
-                                    )
-                                })}
-                            </ul>
+                            <Card.Header>
+                                <Row>
+                                    <Col className='d-flex align-items-center fs-5'>
+                                        <b>Todo List </b>
+                                    </Col>
+                                    <Col md="auto" sm="12" className="sm">
+                                        <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
+                                    </Col>
+                                </Row>
+                            </Card.Header>
+                            <Card.Body className='py-0 overflow-auto' style={{ maxHeight: `${window.innerWidth <= 425 ? window.innerHeight - 420 : window.innerHeight - 450}px` }} >
+                                {
+                                    list.map((task, index) => {
+
+                                        return (
+                                            <Row className={`px-1 py-2 ${list.length !== index + 1 ? "border-bottom" : ""}`} key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }} >
+                                                <Col md="10" >
+                                                    <blockquote className="blockquote mb-0">
+                                                        <p>{task.title}</p>
+                                                        <footer className="blockquote-footer">{task.text}
+                                                        </footer>
+                                                    </blockquote>
+                                                </Col>
+                                                <Col md="2" className='d-flex flex-row-reverse align-items-center'>
+                                                    <div>
+                                                        <Button variant="outline-danger" onClick={() => deleteTodo(task._id)} >Delete</Button>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        )
+                                    })
+                                }
+                            </Card.Body>
                         </Card>
                     </Col>
                 </Row>

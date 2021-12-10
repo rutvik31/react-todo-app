@@ -18,6 +18,7 @@ const Login = () => {
     const [isError, setIsError] = useState(false)
     const [error, setError] = useState("")
     let navigate = useNavigate()
+        
     //Function called on form submit
     const handleFormSubmit = async (e) => {
         e.preventDefault()
@@ -57,6 +58,9 @@ const Login = () => {
                                     <Button onClick={navigate} variant="outline-primary" type="submit">
                                         login
                                     </Button>
+                                    {/* <Button className="float-start" variant="outline-primary" type="submit">
+                                        Forget Password
+                                    </Button> */}
                                 </div>
                                 <br /><br />
                                 <small>Don't have an account ? </small><NavLink to="/register">Register</NavLink>
