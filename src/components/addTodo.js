@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import Container from 'react-bootstrap/Container'
 import Card from 'react-bootstrap/Card'
-import ListGroup from 'react-bootstrap/ListGroup'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Navbar from 'react-bootstrap/Navbar'
@@ -68,8 +67,6 @@ const Myform = (props) => {
         <Modal.Body>
           <Row className="pt-3">
             <Col sm="12" md="12" lg="12">
-
-
               {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
               <Form.Group className="mb-3">
                 <FloatingLabel label="Enter Todo title ">
@@ -99,6 +96,8 @@ const Myform = (props) => {
 
 const Addtodo = () => {
 
+  const [isError, setIsError] = useState(false)
+  const [error, setError] = useState("")
   const [list, setList] = useState([])
   const [date, setDate] = useState(formateDate(new Date()))
   let navigate = useNavigate()
@@ -137,6 +136,7 @@ const Addtodo = () => {
       <Navbar bg="light" variant="light" className="d-flex flex-row-reverse pe-3">
         <Button variant="outline-primary" onClick={logout} type="button"> logout</Button>
       </Navbar>
+      {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
       <Container>
         <Row className="justify-content-md-center mt-3">
           <Col lg={true} className='pb-3'>
@@ -146,10 +146,10 @@ const Addtodo = () => {
                   <Col sm="12" xs="12" className='d-flex align-items-center fs-5'>
                     Todo List
                   </Col>
-                  <Col md="auto" xs="7" sm="7" >
+                  <Col md="auto" xs="7" sm="7" lg="4"  >
                     <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
                   </Col>
-                  <Col md="auto" xs="5" sm="5" lg="2" >
+                  <Col md="auto" xs="5" sm="5" lg="4" >
                     <div>
                       <Button variant="outline-success" onClick={() => setModalShow(true)} > Add Todo</Button>
                     </div>
@@ -162,14 +162,14 @@ const Addtodo = () => {
 
                     return (
                       <Row className={`px-1 py-2 ${list.length !== index + 1 ? "border-bottom" : ""}`} key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }} >
-                        <Col  xs="12" sm="12" md="10" >
+                        <Col xs="12" sm="12" md="10" >
                           <blockquote className="blockquote mb-0">
                             <p>{task.title}</p>
                             <footer className="blockquote-footer">{task.text}
                             </footer>
                           </blockquote>
                         </Col>
-                        <Col  xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
+                        <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
                           <div>
                             <Button variant="outline-danger" onClick={() => deleteTodo(task._id)} >Delete</Button>
                           </div>
