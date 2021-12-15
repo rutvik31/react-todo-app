@@ -15,7 +15,7 @@ import CloseButton from 'react-bootstrap/CloseButton'
 import { ModalFooter } from 'react-bootstrap';
 
 
-
+//Function to saparate date from an iso formate from database
 function formateDate(date) {
   const _ = new Date(date)
   const d = _.getDate() < 10 ? `0${_.getDate()}` : _.getDate()
@@ -52,6 +52,7 @@ const Myform = (props) => {
   return (
     <Modal size="lg"
       {...props}
+      aria-labelledby="contained-modal-title-vcenter"
       centered>
       <Modal.Title className='p-3'>
         <Row>
@@ -96,13 +97,11 @@ const Myform = (props) => {
 
 const Addtodo = () => {
 
-  const [isError, setIsError] = useState(false)
-  const [error, setError] = useState("")
   const [list, setList] = useState([])
   const [date, setDate] = useState(formateDate(new Date()))
-  let navigate = useNavigate()
   const [reloadList, setReloadList] = useState(true)
   const [modalShow, setModalShow] = React.useState(false);
+  let navigate = useNavigate()
 
   const getList = async () => {
     const req = await axios.get("/users/todo", {
@@ -136,7 +135,6 @@ const Addtodo = () => {
       <Navbar bg="light" variant="light" className="d-flex flex-row-reverse pe-3">
         <Button variant="outline-primary" onClick={logout} type="button"> logout</Button>
       </Navbar>
-      {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
       <Container>
         <Row className="justify-content-md-center mt-3">
           <Col lg={true} className='pb-3'>

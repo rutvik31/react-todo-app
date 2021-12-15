@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from './axios'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -11,24 +11,23 @@ import Col from 'react-bootstrap/Col'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 
-const Login = () => {
+const Passwordreset = () => {
 
-    //States
-    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isError, setIsError] = useState(false)
     const [error, setError] = useState("")
     let navigate = useNavigate()
 
+    const { token, userId } = useParams();
+
     //Function called on form submit
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
-            const data = { email, password }
+            const data = { password }
             //Making Api Request
-            const apiReq = await axios.post("/users/login", data)
-            localStorage.setItem("token", apiReq.data.data.token)
-            navigate("/")
+            await axios.post(`/users/password-reset/${userId}/${token}`, data)
+            navigate("/login")
         } catch (error) {
             setIsError(true)
             setError(error.response.data.message)
@@ -42,38 +41,25 @@ const Login = () => {
                 <Row className="justify-content-md-center">
                     <Col md="auto">
                         <Card style={{ width: '20rem' }} >
-                            <Card.Header>Login </Card.Header>
+                            <Card.Header> Password reset form </Card.Header>
+                            {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
                             <Form onSubmit={handleFormSubmit} className="p-3">
-                                {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
                                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                                    <FloatingLabel label="Email address">
-                                        <Form.Control type="email" placeholder="Enter email" onChange={(e) => setEmail(e.target.value)} value={email} required />
-                                    </FloatingLabel>
-                                </Form.Group>
-                                <Form.Group className="mb-3" controlId="formBasicPassword">
-                                    <FloatingLabel label="Password">
-                                        <Form.Control type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} required />
+                                    <FloatingLabel label=" Enter new password">
+                                        <Form.Control type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)} value={password} required />
                                     </FloatingLabel>
                                 </Form.Group>
                                 <div className="text-end mb-2" >
                                     <Button onClick={navigate} variant="outline-primary" type="submit">
-                                        login
+                                        submit
                                     </Button>
                                 </div>
-                                < div className="text-end mb-2" >
-                                    <NavLink to="/password-reset">Forget Password ?</NavLink><br />
-                                </div>
-                                <br /><br />
-                                <small>Don't have an account ? </small><NavLink to="/register">Register</NavLink><br />
                             </Form>
                         </Card>
                     </Col>
                 </Row>
             </Container>
         </div>
-
-
     )
 }
-export default Login
-
+export default Passwordreset

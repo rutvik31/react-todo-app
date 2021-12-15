@@ -2,7 +2,7 @@ import axios from "axios";
 const instance = axios.create({ baseURL: "http://localhost:8080" })
 
 instance.interceptors.request.use((req) => {
-    if (req.url == "/users/login" && "users/register") {
+    if (req.url == "/users/login" && "/users/register") {
         return req
     } else {
         const t = localStorage.getItem("token")
