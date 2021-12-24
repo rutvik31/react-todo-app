@@ -16,14 +16,13 @@ instance.interceptors.request.use((req) => {
     return Promise.reject(error)
 })
 
-instance.interceptors.response.use((res) => {
-    return res
-}, (error) => {
-    if (error.response && error.response.status == 401) {
+instance.interceptors.response.use((response) => response, (error) => {
+    if (error.response.status == 401) {
         localStorage.clear()
-        // window.location("/login")
+        window.location = '/login';
     }
     return Promise.reject(error)
 })
+        
 export default instance
 
