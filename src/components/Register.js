@@ -17,6 +17,7 @@ const Register = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [isError, setIsError] = useState(false)
+    const [photo, setPhoto] = useState()
     const [error, setError] = useState("")
     const navigate = useNavigate()
 
@@ -24,14 +25,18 @@ const Register = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
-            const data = { name, email, password }
+            const data = new FormData()
+            data.append('name', name)
+            data.append('email', email)
+            data.append('password', password)
+            data.append('photo', photo)
+
             //Making Api Request
             await axios.post("/users/register", data)
             navigate("/login")
         } catch (error) {
             setIsError(true)
             setError(error.response.data.message)
-
         }
 
     }
@@ -43,7 +48,7 @@ const Register = () => {
                     <Col md="auto">
                         <Card style={{ width: '20rem' }} >
                             <Card.Header>Register </Card.Header>
-                            <Form onSubmit={handleFormSubmit} className="p-3">
+                            <Form onSubmit={handleFormSubmit} encType='multipart/form-data' className="p-3">
                                 {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
                                 <Form.Group className="mb-3" controlId="formBasicName">
                                     <FloatingLabel label="Enter Your name ">
@@ -59,6 +64,9 @@ const Register = () => {
                                     <FloatingLabel label="Enter password">
                                         <Form.Control type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} required />
                                     </FloatingLabel>
+                                </Form.Group>
+                                <Form.Group className="mb-3" controlId="formBasicPhoto">
+                                    <Form.Control type="file" accept=".png, .jpg, .jpeg" onChange={(e) =>  setPhoto(e.target.files[0])} required />
                                 </Form.Group>
                                 <div className="text-end" >
                                     <Button variant="outline-primary" type="submit">

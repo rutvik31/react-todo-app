@@ -16,9 +16,9 @@ const Passwordreset = () => {
     const [password, setPassword] = useState("")
     const [isError, setIsError] = useState(false)
     const [error, setError] = useState("")
+    const { token, userId } = useParams();
     let navigate = useNavigate()
 
-    const { token, userId } = useParams();
 
     //Function called on form submit
     const handleFormSubmit = async (e) => {
