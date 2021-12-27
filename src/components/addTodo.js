@@ -64,9 +64,9 @@ const Myform = (props) => {
           </Col>
         </Row>
       </Modal.Title>
-      <Form onSubmit={handleFormSubmit} className="p-3">
+      <Form onSubmit={handleFormSubmit}>
         <Modal.Body>
-          <Row className="pt-3">
+          <Row>
             <Col sm="12" md="12" lg="12">
               {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
               <Form.Group className="mb-3">
@@ -76,14 +76,14 @@ const Myform = (props) => {
               </Form.Group>
               <Form.Group className="mb-3">
                 <FloatingLabel label="Description">
-                  <Form.Control type="text" placeholder="Enter your name" onChange={(e) => setText(e.target.value)} value={text} required />
+                  <Form.Control type="textarea" placeholder="Enter your name" onChange={(e) => setText(e.target.value)} value={text} required />
                 </FloatingLabel>
               </Form.Group>
             </Col >
           </Row >
         </Modal.Body >
         <ModalFooter className='d-flex justify-content-end' >
-          <Button variant="outline-success" type="submit">
+          <Button className='btn-sm' variant="outline-success" type="submit">
             Add
           </Button>
         </ModalFooter>
@@ -103,6 +103,7 @@ const Addtodo = () => {
   const [updateModel, setUpdateModel] = React.useState(false)
   const [username, setUsername] = React.useState("")
   const [picture, setPicture] = React.useState()
+  const [search, setSearch] = React.useState("")
   let navigate = useNavigate()
 
   const getList = async () => {
@@ -156,7 +157,7 @@ const Addtodo = () => {
       </Navbar>
       <Container>
         <Row className="justify-content-md-center mt-3">
-          <Col lg={true} className='pb-3'>
+          <Col lg={true} className='pb-3' >
             <Card border="warning" text="dark" >
               <Card.Header>
                 <Row>
@@ -166,34 +167,46 @@ const Addtodo = () => {
                   <Col md="auto" xs="7" sm="7" lg="4"  >
                     <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
                   </Col>
-                  <Col md="auto" xs="5" sm="5" lg="4" >
-                    <div>
-                      <Button variant="outline-success" onClick={() => setModalShow(true)} > Add Todo</Button>
+                  <Col xs="5" sm="5" lg="4" >
+                    <div className='d-flex flex-row-reverse'>
+                      <Button className='btn-sm' variant="outline-success" onClick={() => setModalShow(true)} > Add </Button>
+                    </div>
+                  </Col>
+                  <Col>
+                    <div className='mt-2'>
+                      <Form.Control type="search" placeholder="Search Todo Here..." aria-label="Search" onChange={(e) => { setSearch(e.target.value) }} value={search} />
                     </div>
                   </Col>
                 </Row>
               </Card.Header>
               <Card.Body className='py-0 overflow-auto' style={{ maxHeight: `${window.innerWidth <= 425 ? window.innerHeight - 180 : window.innerHeight - 150}px` }} >
                 {
-                  list.map((task, index) => {
-
-                    return (
-                      <Row className={`px-1 py-2 ${list.length !== index + 1 ? "border-bottom" : ""}`} key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }} >
-                        <Col xs="12" sm="12" md="10" >
-                          <blockquote className="blockquote mb-0">
-                            <p>{task.title}</p>
-                            <footer className="blockquote-footer">{task.text}
-                            </footer>
-                          </blockquote>
-                        </Col>
-                        <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
-                          <div>
-                            <Button variant="outline-danger" onClick={() => deleteTodo(task._id)} >Delete</Button>
-                          </div>
-                        </Col>
-                      </Row>
-                    )
+                  list.filter((val) => {
+                    if (search == "") {
+                      return val
+                    } else {
+                      return val.title.toLowerCase().includes(search.toLowerCase())
+                    }
                   })
+                    .sort((a, b) => a.title.localeCompare(b.title))
+                    .map((task, index) => {
+                      return (
+                        <Row className={`px-1 py-2 ${list.length !== index + 1 ? "border-bottom" : ""}`} key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }} >
+                          <Col xs="12" sm="12" md="10" >
+                            <blockquote className="blockquote mb-0">
+                              <p>{task.title}</p>
+                              <footer className="blockquote-footer">{task.text}
+                              </footer>
+                            </blockquote>
+                          </Col>
+                          <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
+                            <div>
+                              <Button className='btn-sm' variant="outline-danger" onClick={() => deleteTodo(task._id)} >Delete</Button>
+                            </div>
+                          </Col>
+                        </Row>
+                      )
+                    })
                 }
               </Card.Body>
             </Card>
@@ -260,7 +273,7 @@ const Update = (props) => {
         </Row>
       </Modal.Title>
       <Modal.Body>
-        <Form onSubmit={handleUpdateForm} encType='multipart/form-data' className="p-3">
+        <Form onSubmit={handleUpdateForm} encType='multipart/form-data'>
           {isError && <Alert variant='danger' onClose={() => setIsError(false)} dismissible="true">{error}</Alert>}
           <Form.Group className="mb-3" controlId="formBasicName">
             <FloatingLabel label="Enter Your name ">
@@ -273,8 +286,8 @@ const Update = (props) => {
             </FloatingLabel>
           </Form.Group>
           <div className="text-end" >
-            <Button variant="outline-primary" type="submit">
-              update
+            <Button className='btn-sm' variant="outline-primary" type="submit">
+              Update
             </Button>
           </div>
         </Form>
