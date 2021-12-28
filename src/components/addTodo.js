@@ -103,14 +103,22 @@ const Addtodo = () => {
   const [updateModel, setUpdateModel] = React.useState(false)
   const [username, setUsername] = React.useState("")
   const [picture, setPicture] = React.useState()
+  const [sort, setSort] = React.useState(0)
   const [search, setSearch] = React.useState("")
   let navigate = useNavigate()
 
   const getList = async () => {
+    const params = {
+      date: formateDate(date)
+    }
+    if (sort != 0) {
+      params.sort = sort
+    }
+    if (search && search.length > 0) {
+      params.search = search
+    }
     const req = await axios.get("/users/todo", {
-      params: {
-        date: formateDate(date)
-      }
+      params: params
     })
     setList(req.data.data)
   }
@@ -129,6 +137,30 @@ const Addtodo = () => {
 
   const deleteTodo = async (id) => {
     await axios.delete(`/users/todo/${id}`)
+  }
+
+  const toggleSort = () => {
+
+    if (sort == 0) {
+      setSort(1)
+      setReloadList(!reloadList)
+    } else if (sort == 1) {
+      setSort(-1)
+      setReloadList(!reloadList)
+    } else if (sort == -1) {
+      setSort(0)
+      setReloadList(!reloadList)
+    }
+  }
+
+  const searchQ = () => {
+    let st
+    if (st) {
+      clearTimeout(st)
+    }
+    st = setTimeout(() => {
+      setReloadList(!reloadList)
+    }, 1000)
   }
 
   useEffect(() => {
@@ -164,49 +196,48 @@ const Addtodo = () => {
                   <Col sm="12" xs="12" className='d-flex align-items-center fs-5'>
                     Todo List
                   </Col>
-                  <Col md="auto" xs="7" sm="7" lg="4"  >
-                    <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
+                  <Col xs="5" sm="5" lg="5"  >
+                    <div>
+                      <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
+                    </div>
                   </Col>
-                  <Col xs="5" sm="5" lg="4" >
+                  <Col xs="5" sm="5" lg="5" >
+                    <div>
+                      <Form.Control type="search" placeholder="Search" aria-label="Search" onChange={(e) => { setSearch(e.target.value); searchQ() }} />
+                    </div>
+                  </Col>
+                  <Col xs="2" sm="2" lg="2" className='mt-1'>
                     <div className='d-flex flex-row-reverse'>
                       <Button className='btn-sm' variant="outline-success" onClick={() => setModalShow(true)} > Add </Button>
                     </div>
                   </Col>
-                  <Col>
-                    <div className='mt-2'>
-                      <Form.Control type="search" placeholder="Search Todo Here..." aria-label="Search" onChange={(e) => { setSearch(e.target.value) }} value={search} />
+                  <Col xs="2" sm="2" lg="2" className='mt-1'>
+                    <div className='d-flex flex-row-reverse'>
+                      <Button className='btn-sm' variant="outline-success" onClick={() => toggleSort()} > sort </Button>
                     </div>
                   </Col>
                 </Row>
               </Card.Header>
               <Card.Body className='py-0 overflow-auto' style={{ maxHeight: `${window.innerWidth <= 425 ? window.innerHeight - 180 : window.innerHeight - 150}px` }} >
                 {
-                  list.filter((val) => {
-                    if (search == "") {
-                      return val
-                    } else {
-                      return val.title.toLowerCase().includes(search.toLowerCase())
-                    }
+                  list.map((task, index) => {
+                    return (
+                      <Row className={`px-1 py-2 ${list.length !== index + 1 ? "border-bottom" : ""}`} key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }} >
+                        <Col xs="12" sm="12" md="10" >
+                          <blockquote className="blockquote mb-0">
+                            <p>{task.title}</p>
+                            <footer className="blockquote-footer">{task.text}
+                            </footer>
+                          </blockquote>
+                        </Col>
+                        <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
+                          <div>
+                            <Button className='btn-sm' variant="outline-danger" onClick={() => deleteTodo(task._id)} >Delete</Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    )
                   })
-                    .sort((a, b) => a.title.localeCompare(b.title))
-                    .map((task, index) => {
-                      return (
-                        <Row className={`px-1 py-2 ${list.length !== index + 1 ? "border-bottom" : ""}`} key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }} >
-                          <Col xs="12" sm="12" md="10" >
-                            <blockquote className="blockquote mb-0">
-                              <p>{task.title}</p>
-                              <footer className="blockquote-footer">{task.text}
-                              </footer>
-                            </blockquote>
-                          </Col>
-                          <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
-                            <div>
-                              <Button className='btn-sm' variant="outline-danger" onClick={() => deleteTodo(task._id)} >Delete</Button>
-                            </div>
-                          </Col>
-                        </Row>
-                      )
-                    })
                 }
               </Card.Body>
             </Card>
