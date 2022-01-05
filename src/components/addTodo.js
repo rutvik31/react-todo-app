@@ -15,6 +15,7 @@ import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal'
 import CloseButton from 'react-bootstrap/CloseButton'
 import { ModalFooter, NavbarBrand } from 'react-bootstrap'
+import { MdDelete, MdAddTask, MdAddBox, MdLogout, MdSortByAlpha } from "react-icons/md";
 
 //Function to saparate date from an iso formate from database
 function formateDate(date) {
@@ -83,8 +84,8 @@ const Myform = (props) => {
           </Row >
         </Modal.Body >
         <ModalFooter className='d-flex justify-content-end' >
-          <Button className='btn-sm' variant="outline-success" type="submit">
-            Add
+          <Button variant="outline-success" type="submit">
+            <MdAddTask size="1em" />
           </Button>
         </ModalFooter>
       </Form>
@@ -96,15 +97,20 @@ const Myform = (props) => {
 
 const Addtodo = () => {
 
-  const [list, setList] = useState([])
-  const [date, setDate] = useState(formateDate(new Date()))
-  const [reloadList, setReloadList] = useState(true)
+  const [list, setList] = React.useState([])
+  const [date, setDate] = React.useState(formateDate(new Date()))
+  const [reloadList, setReloadList] = React.useState(true)
   const [modalShow, setModalShow] = React.useState(false)
   const [updateModel, setUpdateModel] = React.useState(false)
   const [username, setUsername] = React.useState("")
   const [picture, setPicture] = React.useState()
   const [sort, setSort] = React.useState(0)
   const [search, setSearch] = React.useState("")
+  const [page, setPage] = React.useState(1)
+  const [size, setSize] = React.useState(5)
+  const [len, setLen] = React.useState(1)
+  const [totalPage, setTotalPage] = React.useState(1)
+
   let navigate = useNavigate()
 
   const getList = async () => {
@@ -117,10 +123,23 @@ const Addtodo = () => {
     if (search && search.length > 0) {
       params.search = search
     }
+    if (page) {
+      params.page = page
+    }
+    if (size) {
+      params.size = size
+    }
     const req = await axios.get("/users/todo", {
       params: params
     })
-    setList(req.data.data)
+
+    if (req.data && req.data.data && req.data.data.data) {
+      setList(req.data.data.data)
+    }
+    if (req.data.data.meta.length > 0) {
+      setLen(req.data.data.meta[0].title)
+      setTotalPage(Math.ceil(len / size))
+    }
   }
 
   const getCurrentUser = async () => {
@@ -168,7 +187,6 @@ const Addtodo = () => {
     getCurrentUser()
   }, [reloadList])
 
-  //Function to call on form submit
   const logout = () => {
     localStorage.clear("")
     navigate("/login")
@@ -183,46 +201,43 @@ const Addtodo = () => {
           </NavbarBrand>
           <NavDropdown title={username} size="sm">
             <NavDropdown.Item onClick={() => setUpdateModel(true)} >Edit Profile</NavDropdown.Item>
-            <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+            <NavDropdown.Item onClick={logout}><MdLogout /> Logout</NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar>
       <Container>
-        <Row className="justify-content-md-center mt-3">
+        <Row className="justify-content-md-center mt-3 ">
           <Col lg={true} className='pb-3' >
-            <Card border="warning" text="dark" >
-              <Card.Header>
+            <Card>
+              <Card.Header className='p-2 '>
                 <Row>
-                  <Col sm="12" xs="12" className='d-flex align-items-center fs-5'>
+                  <Col xs="6" sm="6" lg="9" xl="9" className='d-flex align-items-center fs-5 '>
                     Todo List
                   </Col>
-                  <Col xs="5" sm="5" lg="5"  >
-                    <div>
-                      <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
-                    </div>
-                  </Col>
-                  <Col xs="5" sm="5" lg="5" >
-                    <div>
-                      <Form.Control type="search" placeholder="Search" aria-label="Search" onChange={(e) => { setSearch(e.target.value); searchQ() }} />
-                    </div>
-                  </Col>
-                  <Col xs="2" sm="2" lg="2" className='mt-1'>
-                    <div className='d-flex flex-row-reverse'>
-                      <Button className='btn-sm' variant="outline-success" onClick={() => setModalShow(true)} > Add </Button>
-                    </div>
-                  </Col>
-                  <Col xs="2" sm="2" lg="2" className='mt-1'>
-                    <div className='d-flex flex-row-reverse'>
-                      <Button className='btn-sm' variant="outline-success" onClick={() => toggleSort()} > sort </Button>
-                    </div>
+                  <Col xs="6" sm="6" lg="3" xl="3" className='d-flex align-items-center fs-5'>
+                    <Form.Control type="date" onChange={(e) => { setDate(e.target.value); setReloadList(!reloadList) }} value={date} />
                   </Col>
                 </Row>
               </Card.Header>
-              <Card.Body className='py-0 overflow-auto' style={{ maxHeight: `${window.innerWidth <= 425 ? window.innerHeight - 180 : window.innerHeight - 150}px` }} >
+              <Card.Body className='py-0 overflow-auto' style={{ maxHeight: `${window.innerWidth <= 425 ? window.innerHeight - 273 : window.innerHeight - 243}px` }} >
+                <div className="d-flex justify-content-center">
+                  <Row>
+                    <Col xs="8" sm="8" lg="8" xl="8" className='d-flex align-items-center fs-5 p-2'>
+                      <Form.Control type="search" placeholder="Search" aria-label="Search" onChange={(e) => { setSearch(e.target.value); searchQ() }} />
+
+                    </Col>
+                    <Col xs="2" sm="2" lg="2" xl="2" className='d-flex align-items-center fs-5 p-2'>
+                      <MdSortByAlpha size="2em" color="green" onClick={() => toggleSort()} type="submit" />
+                    </Col>
+                    <Col xs="2" sm="2" lg="2" xl="2" className='d-flex align-items-center fs-5 p-2'>
+                      <MdAddBox size="2em" color='blue' onClick={() => setModalShow(true)} type='submit' />
+                    </Col>
+                  </Row>
+                </div>
                 {
                   list.map((task, index) => {
                     return (
-                      <Row className={`px-1 py-2 ${list.length !== index + 1 ? "border-bottom" : ""}`} key={task._id} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }} >
+                      <Row className={`px-1 py-2 ${list.length !== index + 1 ? "border-bottom" : ""} border-top `} key={index} onClick={() => toggleTodo(task)} style={{ textDecorationLine: task.isCompleted ? 'line-through' : "" }} >
                         <Col xs="12" sm="12" md="10" >
                           <blockquote className="blockquote mb-0">
                             <p>{task.title}</p>
@@ -232,7 +247,9 @@ const Addtodo = () => {
                         </Col>
                         <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
                           <div>
-                            <Button className='btn-sm' variant="outline-danger" onClick={() => deleteTodo(task._id)} >Delete</Button>
+                            <Button variant="outline-danger" type="submit">
+                              <MdDelete size="1em" onClick={() => deleteTodo(task._id)} />
+                            </Button>
                           </div>
                         </Col>
                       </Row>
@@ -240,6 +257,12 @@ const Addtodo = () => {
                   })
                 }
               </Card.Body>
+              <Card.Footer className="d-flex justify-content-center">
+                <ul className="pagination">
+                  <li onClick={() => { setPage(page > 1 ? page - 1 : 1); setReloadList(!reloadList) }} className="page-item page-link">Previous</li>
+                  <li onClick={() => { setPage(totalPage > 0 && totalPage > page ? page + 1 : page); setReloadList(!reloadList) }} className="page-item page-link">Next</li>
+                </ul>
+              </Card.Footer>
             </Card>
           </Col>
         </Row>
@@ -251,7 +274,6 @@ const Addtodo = () => {
   )
 
 }
-
 
 const Update = (props) => {
 
@@ -329,3 +351,4 @@ const Update = (props) => {
 
 }
 export default Addtodo
+
