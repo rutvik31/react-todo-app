@@ -15,7 +15,8 @@ import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal'
 import CloseButton from 'react-bootstrap/CloseButton'
 import { ModalFooter, NavbarBrand } from 'react-bootstrap'
-import { MdDelete, MdAddTask, MdAddBox, MdLogout, MdSortByAlpha } from "react-icons/md";
+import { MdDelete, MdAddTask, MdAddBox, MdLogout, MdSortByAlpha, MdLastPage, MdFirstPage } from "react-icons/md";
+import { FaSort } from "react-icons/fa";
 
 //Function to saparate date from an iso formate from database
 function formateDate(date) {
@@ -84,8 +85,8 @@ const Myform = (props) => {
           </Row >
         </Modal.Body >
         <ModalFooter className='d-flex justify-content-end' >
-          <Button variant="outline-success" type="submit">
-            <MdAddTask size="1em" />
+          <Button variant="outline-success btn-sm" data-toggle="tooltip" title="Add a task" type="submit">
+            <MdAddTask size="1rem" />
           </Button>
         </ModalFooter>
       </Form>
@@ -224,13 +225,16 @@ const Addtodo = () => {
                   <Row>
                     <Col xs="8" sm="8" lg="8" xl="8" className='d-flex align-items-center fs-5 p-2'>
                       <Form.Control type="search" placeholder="Search" aria-label="Search" onChange={(e) => { setSearch(e.target.value); searchQ() }} />
-
                     </Col>
                     <Col xs="2" sm="2" lg="2" xl="2" className='d-flex align-items-center fs-5 p-2'>
-                      <MdSortByAlpha size="2em" color="green" onClick={() => toggleSort()} type="submit" />
+                      <Button variant="outline-success btn-sm" data-toggle="tooltip" title="Sort Task" onClick={() => toggleSort()} type="submit" >
+                        <FaSort size="1.2rem" />
+                      </Button>
                     </Col>
                     <Col xs="2" sm="2" lg="2" xl="2" className='d-flex align-items-center fs-5 p-2'>
-                      <MdAddBox size="2em" color='blue' onClick={() => setModalShow(true)} type='submit' />
+                      <Button variant="outline-success btn-sm" data-toggle="tooltip" title="Add a new task" onClick={() => setModalShow(true)} type='submit'>
+                        <MdAddTask size="1.2rem" />
+                      </Button>
                     </Col>
                   </Row>
                 </div>
@@ -247,7 +251,7 @@ const Addtodo = () => {
                         </Col>
                         <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
                           <div>
-                            <Button variant="outline-danger" type="submit">
+                            <Button variant="outline-danger btn-sm" data-toggle="tooltip" title="Delete this task" type="submit">
                               <MdDelete size="1em" onClick={() => deleteTodo(task._id)} />
                             </Button>
                           </div>
@@ -257,11 +261,19 @@ const Addtodo = () => {
                   })
                 }
               </Card.Body>
-              <Card.Footer className="d-flex justify-content-center">
-                <ul className="pagination">
-                  <li onClick={() => { setPage(page > 1 ? page - 1 : 1); setReloadList(!reloadList) }} className="page-item page-link">Previous</li>
-                  <li onClick={() => { setPage(totalPage > 0 && totalPage > page ? page + 1 : page); setReloadList(!reloadList) }} className="page-item page-link">Next</li>
-                </ul>
+              <Card.Footer>
+                <Row>
+                  <Col>
+                    <div className="d-flex justify-content-center">
+                      <Button className="ms-2 me-2" variant="outline-success btn-sm" data-toggle="tooltip" title="Go To Previous Page" onClick={() => { setPage(page > 1 ? page - 1 : 1); setReloadList(!reloadList) }}>
+                        <MdFirstPage size="1rem" />
+                      </Button>
+                      <Button variant="outline-success btn-sm" data-toggle="tooltip" title="Go To Next Page" onClick={() => { setPage(totalPage > 0 && totalPage > page ? page + 1 : page); setReloadList(!reloadList) }}>
+                        <MdLastPage size="1rem" />
+                      </Button>
+                    </div>
+                  </Col>
+                </Row>
               </Card.Footer>
             </Card>
           </Col>
