@@ -255,14 +255,13 @@ const Addtodo = () => {
                           <blockquote className="blockquote mb-0">
                             <p>{task.title}</p>
                             <footer className="blockquote-footer">{task.text}
+                              <h6>Priority : {task.priority}</h6>
                             </footer>
                           </blockquote>
                         </Col>
-                        <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse align-items-center'>
+                        <Col xs="12" sm="12" md="2" className='d-flex flex-row-reverse'>
                           <div>
-                            <Button variant="outline-danger btn-sm" data-toggle="tooltip" title="Delete this task" type="submit">
-                              <MdDelete size="1em" onClick={() => deleteTodo(task._id)} />
-                            </Button>
+                            <MdDelete size="1.5rem" color='red' type='submit' onClick={() => deleteTodo(task._id)} />
                           </div>
                         </Col>
                       </Row>
