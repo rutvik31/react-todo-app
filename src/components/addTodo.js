@@ -15,7 +15,7 @@ import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal'
 import CloseButton from 'react-bootstrap/CloseButton'
 import { ModalFooter, NavbarBrand } from 'react-bootstrap'
-import { MdDelete, MdAddTask, MdAddBox, MdLogout, MdSortByAlpha, MdLastPage, MdFirstPage } from "react-icons/md";
+import { MdDelete, MdAddTask, MdLogout, MdLastPage, MdFirstPage } from "react-icons/md";
 import { FaSort } from "react-icons/fa";
 
 //Function to saparate date from an iso formate from database
@@ -34,14 +34,16 @@ const Myform = (props) => {
   //States
   const [title, setTitle] = useState("")
   const [text, setText] = useState("")
+  const [priority, setPriority] = useState("")
   const [isError, setIsError] = useState(false)
   const [error, setError] = useState("")
 
   const handleFormSubmit = async (e) => {
     e.preventDefault()
     try {
-      const data = { title, text }
+      const data = { title, text, priority }
       await axios.post("/users/todo", data)
+      console.log(data)
       props.onHide()
       setTitle("")
       setText("")
@@ -78,8 +80,15 @@ const Myform = (props) => {
               </Form.Group>
               <Form.Group className="mb-3">
                 <FloatingLabel label="Description">
-                  <Form.Control type="textarea" placeholder="Enter your name" onChange={(e) => setText(e.target.value)} value={text} required />
+                  <Form.Control type="textarea" placeholder="Enter Description" onChange={(e) => setText(e.target.value)} value={text} required />
                 </FloatingLabel>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Select Priority</Form.Label>
+                <Form.Select type="priority" onChange={(e) => setPriority(e.target.value)} value={priority} required>
+                  <option> Normal </option>
+                  <option> High </option>
+                </Form.Select>
               </Form.Group>
             </Col >
           </Row >
@@ -314,7 +323,6 @@ const Update = (props) => {
     try {
       const apireq = await axios.patch(`/users/update/${id}`, data)
       localStorage.setItem("token", apireq.data.data)
-      console.log(apireq.data.data)
     } catch (error) {
       setIsError(true)
       setError(error.response.data.message)
